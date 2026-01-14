@@ -40,6 +40,7 @@ public class ClientDto {
         this.setCpf(entity.getCpf());
         this.setIncome(entity.getIncome());
         this.setChildren(entity.getChildren());
+        this.setBirthDate(entity.getBirthDate());
     }
 
     public Long getId() {
