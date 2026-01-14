@@ -8,8 +8,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @Service
 public class ClientService {
@@ -56,7 +56,6 @@ public class ClientService {
     public ClientDto insert(ClientDto dto) {
         Client entity = new Client(dto);
         entity = repository.save(entity);
-//        copyEntityToDto(dto, entity);
         return new ClientDto(entity);
     }
 
@@ -84,6 +83,18 @@ public class ClientService {
         }
 
     }
+
+    /**
+     * Deleta um cliente cadastrado
+     * @param id    identificador único do cliente
+     * @throws ContentNotFoundException se o id não existir
+     */
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void delete(Long id) throws ContentNotFoundException {
+        if(!repository.existsById(id)) throw new ContentNotFoundException("Impossível deletar: cliente não cadastrado.");
+        repository.deleteById(id);
+    }
+
     /**
      * Copia dados de uma dto para uma entidade
      * @param dto   objeto de transferência de dados

@@ -57,9 +57,21 @@ public class ClientController {
         return ResponseEntity.created(uri).body(dto);
     }
 
+    /**
+     * Atualiza os dados de um cliente já existente
+     * @param id    identificador único de um cliente já registrado
+     * @param dto   novos dados do cliente
+     * @return      dados do cliente atualizados
+     */
     @PutMapping(value = "/{id}")
     public ResponseEntity<ClientDto> update(@PathVariable Long id , @RequestBody @Valid ClientDto dto) {
         dto = service.update(id, dto);
         return ResponseEntity.ok(dto);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
