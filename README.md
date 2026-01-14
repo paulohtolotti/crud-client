@@ -72,3 +72,13 @@ Exemplo de payload:
 ### DELETE
 
 Deletar cliente:  http://localhost:8080/clients/2
+
+## Banco H2
+
+H2 é um banco de dados in memory, usado para protótipos e em ambiente de desenvolvimento.
+
+Para acessar seu console, acesse http://localhost:8080/h2-console
+
+Credenciais:
+- JDBC URL: jdbc:h2:mem:clientdb
+- Username: sa
