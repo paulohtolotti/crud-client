@@ -4,7 +4,10 @@ import com.devsuperior.clientcrud.dto.ClientDto;
 import com.devsuperior.clientcrud.entities.Client;
 import com.devsuperior.clientcrud.repositories.ClientRepository;
 import com.devsuperior.clientcrud.services.exceptions.ContentNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ClientService {
@@ -22,11 +25,23 @@ public class ClientService {
      * @return  dados do cliente no formato adequado para trafegar na rede
      * @throws ContentNotFoundException se o id não existir
      */
+    @Transactional(readOnly = true)
     public ClientDto findById(Long id) throws ContentNotFoundException {
         Client entity = repository.findById(id).orElseThrow(
                 () -> new ContentNotFoundException("Id " + id + " não encontrado")
         );
         return new ClientDto(entity);
+    }
+
+    /**
+     * Busca paginada de clientes
+     * @param pageable  objeto para realizar a consulta paginada
+     * @return  páginas prontas para transferência para o cliente
+     */
+    @Transactional(readOnly = true)
+    public Page<ClientDto> findAll(Pageable pageable) {
+        Page<Client> clientPage = repository.findAll(pageable);
+        return clientPage.map(c -> new ClientDto(c));
     }
 
     /**
