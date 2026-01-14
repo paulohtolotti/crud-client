@@ -44,6 +44,16 @@ public class ClientService {
         return clientPage.map(c -> new ClientDto(c));
     }
 
+    @Transactional
+    public ClientDto insert(ClientDto dto) {
+
+        Client entity = new Client(dto);
+        entity = repository.save(entity);
+        copyEntityToDto(dto, entity);
+        return dto;
+
+    }
+
     /**
      * Copia dados de uma entidade para um dto
      * @param dto   objeto de transferência de dados

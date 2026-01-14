@@ -1,5 +1,6 @@
 package com.devsuperior.clientcrud.entities;
 
+import com.devsuperior.clientcrud.dto.ClientDto;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -28,6 +29,14 @@ public class Client {
         this.income = income;
         this.birthDate = birthDate;
         this.children = children;
+    }
+
+    public Client(ClientDto dto) {
+        name = dto.getName();
+        cpf = dto.getCpf();
+        income = dto.getIncome();
+        birthDate = dto.getBirthDate();
+        children = dto.getChildren();
     }
 
     public Long getId() {

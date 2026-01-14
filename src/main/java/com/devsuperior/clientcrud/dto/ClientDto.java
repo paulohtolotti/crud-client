@@ -3,7 +3,6 @@ package com.devsuperior.clientcrud.dto;
 import com.devsuperior.clientcrud.entities.Client;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
 import java.time.LocalDate;
