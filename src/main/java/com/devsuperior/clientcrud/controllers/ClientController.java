@@ -44,11 +44,22 @@ public class ClientController {
         return ResponseEntity.ok(page);
     }
 
+    /**
+     * Insere um novo cliente
+     * @param dto
+     * @return dados do cliente inserido, juntamente com o registro único gerado pelo BD
+     */
     @PostMapping
     public ResponseEntity<ClientDto> insert(@Valid @RequestBody ClientDto dto) {
         dto = service.insert(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(dto.getId()).toUri();
         return ResponseEntity.created(uri).body(dto);
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<ClientDto> update(@PathVariable Long id , @RequestBody @Valid ClientDto dto) {
+        dto = service.update(id, dto);
+        return ResponseEntity.ok(dto);
     }
 }

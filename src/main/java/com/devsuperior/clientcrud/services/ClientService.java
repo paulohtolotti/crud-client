@@ -4,10 +4,12 @@ import com.devsuperior.clientcrud.dto.ClientDto;
 import com.devsuperior.clientcrud.entities.Client;
 import com.devsuperior.clientcrud.repositories.ClientRepository;
 import com.devsuperior.clientcrud.services.exceptions.ContentNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @Service
 public class ClientService {
@@ -44,27 +46,54 @@ public class ClientService {
         return clientPage.map(c -> new ClientDto(c));
     }
 
+    /**
+     * Insere um novo cliente no banco de dados
+     * @param dto
+     * @return
+     *
+     */
     @Transactional
     public ClientDto insert(ClientDto dto) {
-
         Client entity = new Client(dto);
         entity = repository.save(entity);
-        copyEntityToDto(dto, entity);
-        return dto;
-
+//        copyEntityToDto(dto, entity);
+        return new ClientDto(entity);
     }
 
     /**
-     * Copia dados de uma entidade para um dto
+     * Atualiza os dados de um cliente no banco de dados
+     * @param id    identificador único do cliente
+     * @param dto   dados da requisição
+     * @return      cliente com os dados atualizados
+     * @throws ContentNotFoundException se o ID do cliente não existir
+     */
+    @Transactional
+    public ClientDto update(Long id, ClientDto dto) throws ContentNotFoundException {
+        // Recuperar a entidade pelo ID -> Copiar os dados da entidade para o DTO -> Salvar o DTO
+
+        try {
+            Client entity = repository.getReferenceById(id);
+
+            copyParameters(dto, entity);
+
+            entity = repository.save(entity);
+
+            return new ClientDto(entity);
+        } catch(EntityNotFoundException err) {
+            throw new ContentNotFoundException("Cliente com id " + id + " não encontrado");
+        }
+
+    }
+    /**
+     * Copia dados de uma dto para uma entidade
      * @param dto   objeto de transferência de dados
      * @param entity    entidade recuperada do banco de dados
      */
-    private void copyEntityToDto(ClientDto dto, Client entity) {
-        dto.setId(entity.getId());
-        dto.setName(entity.getName());
-        dto.setCpf(entity.getCpf());
-        dto.setIncome(entity.getIncome());
-        dto.setChildren(entity.getChildren());
+    private void copyParameters(ClientDto dto, Client entity) {
+        entity.setName(dto.getName());
+        entity.setCpf(dto.getCpf());
+        entity.setIncome(dto.getIncome());
+        entity.setChildren(dto.getChildren());
     }
 
 }
